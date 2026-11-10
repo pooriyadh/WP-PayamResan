@@ -1,0 +1,14 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: WP PayamResan 1.0.0\n"
+"Report-Msgid-Bugs-To: pouriadaeihosseini@gmail.com\n"
+"POT-Creation-Date: 2026-11-10 00:00+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fa_IR\n"
+"X-Domain: wp-payamresan\n"
+
+#: wp-payamresan.php
+msgid "افزونه WP PayamResan برای اجرا به PHP نسخه %1$s یا بالاتر نیاز دارد. نسخه فعلی سرور شما %2$s است."
+msgstr ""
