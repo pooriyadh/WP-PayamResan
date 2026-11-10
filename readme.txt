@@ -4,7 +4,7 @@ Tags: telegram, bale, autopost, jetengine, metabox, social, persian
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -34,6 +34,9 @@ Author: پوریا دایی حسینی (pouriadaeihosseini@gmail.com)
 4. از تب «پست تایپ‌ها و متادیتا» پست تایپ‌های مورد نظر خود را فعال و الگوی پیام را تنظیم نمایید.
 
 == Changelog ==
+
+= 1.1.0 =
+* بازطراحی کامل و مدرن داشبورد مدیریت افزونه و متاباکس ویرایشگر با کارت‌های وضعیت زنده، ناوبری جدید، جستجوی پست تایپ‌ها و بارگذاری محلی فونت وزیرمتن (Vazirmatn).
 
 = 1.0.0 =
 * انتشار اولیه افزونه با پشتیبانی از تلگرام، بله، شناسایی تمام پست تایپ‌ها، سازگاری با JetEngine و متاباکس‌ها، ارسال دستی/خودکار و تست اتصال.

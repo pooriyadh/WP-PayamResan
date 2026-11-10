@@ -85,10 +85,10 @@ class Meta_Box {
 		$is_draft   = in_array( $post->post_status, array( 'auto-draft', 'new' ), true );
 
 		?>
-		<div class="wppr-metabox">
+		<div class="wppr-metabox" dir="rtl">
 			<div class="wppr-metabox-status">
 				<div class="wppr-status-row">
-					<span>تلگرام:</span>
+					<span class="wppr-status-name">تلگرام</span>
 					<?php if ( ! $tg_enabled ) : ?>
 						<span class="wppr-badge wppr-badge-muted">غیرفعال</span>
 					<?php elseif ( is_array( $sent_telegram ) && ! empty( $sent_telegram['timestamp'] ) ) : ?>
@@ -99,7 +99,7 @@ class Meta_Box {
 				</div>
 
 				<div class="wppr-status-row">
-					<span>بله:</span>
+					<span class="wppr-status-name">بله</span>
 					<?php if ( ! $bl_enabled ) : ?>
 						<span class="wppr-badge wppr-badge-muted">غیرفعال</span>
 					<?php elseif ( is_array( $sent_bale ) && ! empty( $sent_bale['timestamp'] ) ) : ?>
@@ -111,49 +111,45 @@ class Meta_Box {
 			</div>
 
 			<?php if ( Post_Type_Detector::is_auto_enabled( $post->post_type ) ) : ?>
-				<p class="wppr-metabox-field">
-					<label>
-						<input type="checkbox" name="wp_payamresan_disable_auto" value="1" <?php checked( $disable_auto ); ?> />
-						عدم ارسال خودکار هنگام انتشار
-					</label>
-				</p>
+				<label class="wppr-check-card wppr-mb-check-card">
+					<input type="checkbox" name="wp_payamresan_disable_auto" value="1" <?php checked( $disable_auto ); ?> />
+					<span>عدم ارسال خودکار هنگام انتشار</span>
+				</label>
 			<?php else : ?>
-				<p class="description">ارسال خودکار برای این پست تایپ غیرفعال است (حالت دستی).</p>
+				<p class="wppr-mb-note">ارسال خودکار برای این پست تایپ غیرفعال است (حالت دستی).</p>
 			<?php endif; ?>
 
-			<p class="wppr-metabox-field">
-				<label for="wppr-custom-message"><strong>الگو یا متن اختصاصی این مطلب (اختیاری):</strong></label>
-				<textarea id="wppr-custom-message" name="wp_payamresan_custom_message" rows="4" class="widefat" placeholder="در صورت خالی ماندن، از الگوی تنظیمات پست تایپ استفاده می‌شود."><?php echo esc_textarea( $custom_message ); ?></textarea>
-				<span class="description">پشتیبانی از متغیرهایی مثل <code>{post_title}</code> و <code>{meta:key}</code></span>
-			</p>
-
-			<hr />
+			<div class="wppr-metabox-field">
+				<label for="wppr-custom-message"><strong>متن یا الگوی اختصاصی (اختیاری):</strong></label>
+				<textarea id="wppr-custom-message" name="wp_payamresan_custom_message" rows="4" class="wppr-textarea" placeholder="در صورت خالی ماندن، از الگوی پست تایپ استفاده می‌شود."><?php echo esc_textarea( $custom_message ); ?></textarea>
+				<span class="wppr-mb-hint">پشتیبانی از متغیرهایی مانند <code>{post_title}</code> و <code>{meta:key}</code></span>
+			</div>
 
 			<div class="wppr-metabox-manual">
-				<p><strong>ارسال دستی به پیام‌رسان‌ها:</strong></p>
+				<span class="wppr-mb-manual-title">ارسال دستی به پیام‌رسان‌ها:</span>
 
 				<?php if ( ! $tg_enabled && ! $bl_enabled ) : ?>
-					<p class="description">هر دو پیام‌رسان در تنظیمات افزونه غیرفعال هستند.</p>
+					<p class="wppr-mb-note">هر دو پیام‌رسان در تنظیمات افزونه غیرفعال هستند.</p>
 				<?php elseif ( $is_draft ) : ?>
-					<p class="description">ابتدا مطلب را ذخیره یا منتشر کنید تا امکان ارسال دستی فعال شود.</p>
+					<p class="wppr-mb-note">ابتدا مطلب را ذخیره یا منتشر کنید تا امکان ارسال دستی فعال شود.</p>
 				<?php else : ?>
 					<div class="wppr-metabox-checks">
 						<?php if ( $tg_enabled ) : ?>
-							<label>
+							<label class="wppr-pill-check">
 								<input type="checkbox" class="wppr-mb-messenger" value="telegram" <?php checked( in_array( $pt_config['messengers'], array( 'both', 'telegram' ), true ) ); ?> />
-								تلگرام
+								<span>تلگرام</span>
 							</label>
 						<?php endif; ?>
 						<?php if ( $bl_enabled ) : ?>
-							<label>
+							<label class="wppr-pill-check">
 								<input type="checkbox" class="wppr-mb-messenger" value="bale" <?php checked( in_array( $pt_config['messengers'], array( 'both', 'bale' ), true ) ); ?> />
-								بله
+								<span>بله</span>
 							</label>
 						<?php endif; ?>
 					</div>
 
 					<button type="button"
-						class="button button-primary widefat wppr-mb-send-btn"
+						class="wppr-btn wppr-btn-primary wppr-btn-block wppr-mb-send-btn"
 						data-post-id="<?php echo esc_attr( $post->ID ); ?>">
 						ارسال دستی هم‌اکنون
 					</button>

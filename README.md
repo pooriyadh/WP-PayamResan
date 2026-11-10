@@ -1,6 +1,6 @@
 # WP PayamResan
 
-[![Version](https://img.shields.io/badge/Version-1.0.0-blue.svg)](./CHANGELOG.md)
+[![Version](https://img.shields.io/badge/Version-1.1.0-blue.svg)](./CHANGELOG.md)
 [![WordPress](https://img.shields.io/badge/WordPress-5.8%2B-21759b.svg)](https://wordpress.org/)
 [![PHP](https://img.shields.io/badge/PHP-7.4%2B-777bb4.svg)](https://www.php.net/)
 [![License](https://img.shields.io/badge/License-GPL--2.0--or--later-green.svg)](./LICENSE)
@@ -28,6 +28,7 @@
 - **تست اتصال و ارسال پیام آزمایشی**:
   - بررسی اعتبار توکن ربات (`getMe`)، یافتن کانال (`getChat`) و بررسی ادمین بودن ربات (`getChatMember`) به صورت مجزا برای بله و تلگرام.
   - دکمه ارسال پیام تستی زنده به کانال برای اطمینان از عملکرد صحیح پیش از انتشار مطالب.
+- **رابط کاربری مدرن با فونت وزیرمتن (Vazirmatn)**: داشبورد تمام‌فارسی با هدر وضعیت زنده، کارت‌های آمار، جستجوی لحظه‌ای پست تایپ‌ها، ناوبری قرصی و بارگذاری محلی فونت استاندارد **وزیرمتن** بدون وابستگی به CDN خارجی.
 - **گزارش ارسال (Logs)**: ثبت تمامی ارسال‌های خودکار، دستی، گروهی و تستی با وضعیت، شناسه پیام و جزئیات خطا.
 
 ---
@@ -122,8 +123,9 @@ WP-PayamResan/
 ├── readme.txt                         # راهنمای استاندارد مخزن وردپرس
 ├── CHANGELOG.md                       # تاریخچه نسخه‌ها (SemVer)
 ├── assets/
-│   ├── css/admin.css                  # استایل RTL پنل مدیریت
-│   └── js/admin.js                    # منطق AJAX و پیش‌نمایش زنده
+│   ├── css/admin.css                  # استایل مدرن RTL پنل مدیریت با فونت وزیرمتن
+│   ├── fonts/                         # فایل‌های محلی فونت Vazirmatn (woff2 + مجوز OFL)
+│   └── js/admin.js                    # منطق AJAX، جستجوی پست تایپ و پیش‌نمایش زنده
 └── includes/
     ├── class-plugin.php               # هسته و بارگذاری سرویس‌ها
     ├── class-settings.php             # مدیریت تنظیمات و پاکسازی ورودی‌ها
@@ -150,7 +152,7 @@ WP-PayamResan/
 ## 👨‍💻 نویسنده و مجوز
 
 - **نام افزونه:** WP PayamResan
-- **نسخه:** 1.0.0
+- **نسخه:** 1.1.0
 - **نویسنده:** پوریا دایی حسینی
 - **ایمیل نویسنده:** [pouriadaeihosseini@gmail.com](mailto:pouriadaeihosseini@gmail.com)
 - **مجوز انتشار:** [GPL-2.0-or-later](./LICENSE)

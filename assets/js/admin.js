@@ -28,6 +28,14 @@
 		return html;
 	}
 
+	function setBtnLoading($btn, loading) {
+		if (loading) {
+			$btn.prop('disabled', true).addClass('is-loading');
+		} else {
+			$btn.prop('disabled', false).removeClass('is-loading');
+		}
+	}
+
 	function insertAtCursor(textarea, text) {
 		if (!textarea) {
 			return;
@@ -56,17 +64,17 @@
 		}
 
 		html += '<div class="wppr-preview-grid">';
-		html += '<div class="wppr-preview-pane"><h4>خروجی تلگرام</h4><pre>' + escHtml(data.telegram_text || '') + '</pre></div>';
-		html += '<div class="wppr-preview-pane"><h4>خروجی بله</h4><pre>' + escHtml(data.bale_text || '') + '</pre></div>';
+		html += '<div class="wppr-preview-pane is-telegram"><div class="wppr-preview-pane-head"><span class="wppr-dot"></span><h4>خروجی تلگرام (HTML)</h4></div><pre>' + escHtml(data.telegram_text || '') + '</pre></div>';
+		html += '<div class="wppr-preview-pane is-bale"><div class="wppr-preview-pane-head"><span class="wppr-dot"></span><h4>خروجی بله (Markdown)</h4></div><pre>' + escHtml(data.bale_text || '') + '</pre></div>';
 		html += '</div>';
 
 		if (Array.isArray(data.meta_samples) && data.meta_samples.length > 0) {
-			html += '<table class="widefat striped wppr-preview-meta-table"><thead><tr><th>کلید متا</th><th>برچسب</th><th>منبع</th><th>مقدار خوانده‌شده</th></tr></thead><tbody>';
+			html += '<div class="wppr-table-scroll"><table class="wppr-table wppr-preview-meta-table"><thead><tr><th>کلید متا</th><th>برچسب</th><th>منبع</th><th>مقدار خوانده‌شده</th></tr></thead><tbody>';
 			data.meta_samples.forEach(function (m) {
 				html += '<tr><td><code>{meta:' + escHtml(m.key) + '}</code></td><td>' +
 					escHtml(m.label) + '</td><td>' + escHtml(m.source) + '</td><td>' + escHtml(m.value) + '</td></tr>';
 			});
-			html += '</tbody></table>';
+			html += '</tbody></table></div>';
 		}
 		return html;
 	}
@@ -94,6 +102,26 @@
 		return renderAlert(res && res.success ? 'success' : 'error', payload.message || 'عملیات انجام شد.', lines);
 	}
 
+	function applyCptFilters() {
+		var query = ($('#wppr-cpt-search').val() || '').trim().toLowerCase();
+		var mode = $('.wppr-filter-pill.is-active').data('cpt-filter') || 'all';
+
+		$('.wppr-pt-card').each(function () {
+			var $card = $(this);
+			var haystack = String($card.attr('data-cpt-search') || '').toLowerCase();
+			var isEnabled = $card.attr('data-cpt-enabled') === '1';
+
+			var matchesQuery = !query || haystack.indexOf(query) !== -1;
+			var matchesMode = mode === 'all' || (mode === 'enabled' && isEnabled);
+
+			if (matchesQuery && matchesMode) {
+				$card.show();
+			} else {
+				$card.hide();
+			}
+		});
+	}
+
 	$(document).ready(function () {
 		// Toggle token visibility.
 		$(document).on('click', '.wppr-toggle-secret', function () {
@@ -115,7 +143,7 @@
 		$(document).on('click', '.wppr-test-connection-btn', function () {
 			var $btn = $(this);
 			var $output = $($btn.data('output'));
-			$btn.prop('disabled', true);
+			setBtnLoading($btn, true);
 			$output.html(renderAlert('info', i18n.testing || 'در حال بررسی...'));
 
 			$.post(cfg.ajaxUrl, {
@@ -134,7 +162,7 @@
 				}
 				if (Array.isArray(data.channels)) {
 					data.channels.forEach(function (ch) {
-						details.push((ch.success ? '✅ ' : '❌ ') + ch.channel_id + ': ' + ch.message);
+						details.push((ch.success ? '✓ ' : '✕ ') + ch.channel_id + ': ' + ch.message);
 					});
 				}
 				$output.html(renderAlert(res.success ? 'success' : 'error', data.message || '', details));
@@ -146,7 +174,7 @@
 				$output.html(renderAlert('error', msg));
 			})
 			.always(function () {
-				$btn.prop('disabled', false);
+				setBtnLoading($btn, false);
 			});
 		});
 
@@ -154,7 +182,7 @@
 		$(document).on('click', '.wppr-send-test-btn', function () {
 			var $btn = $(this);
 			var $output = $($btn.data('output'));
-			$btn.prop('disabled', true);
+			setBtnLoading($btn, true);
 			$output.html(renderAlert('info', i18n.sendingTest || 'در حال ارسال...'));
 
 			$.post(cfg.ajaxUrl, {
@@ -172,9 +200,9 @@
 				if (Array.isArray(data.results)) {
 					data.results.forEach(function (r) {
 						if (r.success) {
-							details.push('✅ ' + r.channel_id + ' — شناسه پیام: ' + (r.message_id || '-'));
+							details.push('✓ ' + r.channel_id + ' — شناسه پیام: ' + (r.message_id || '-'));
 						} else {
-							details.push('❌ ' + r.channel_id + ' — ' + (r.error || 'خطا'));
+							details.push('✕ ' + r.channel_id + ' — ' + (r.error || 'خطا'));
 						}
 					});
 				}
@@ -187,15 +215,34 @@
 				$output.html(renderAlert('error', msg));
 			})
 			.always(function () {
-				$btn.prop('disabled', false);
+				setBtnLoading($btn, false);
 			});
 		});
 
-		// Accordion toggle for Post Type cards.
-		$(document).on('click', '.wppr-pt-toggle-body', function () {
+		// Accordion toggle for Post Type cards (click button or title group).
+		$(document).on('click', '.wppr-pt-toggle-body, .wppr-pt-title-group', function (e) {
+			if ($(e.target).closest('.wppr-pt-toggle-body').length && $(this).hasClass('wppr-pt-title-group')) {
+				return;
+			}
 			var $card = $(this).closest('.wppr-pt-card');
 			$card.toggleClass('is-open');
-			$(this).attr('aria-expanded', $card.hasClass('is-open') ? 'true' : 'false');
+			$card.find('.wppr-pt-toggle-body').attr('aria-expanded', $card.hasClass('is-open') ? 'true' : 'false');
+		});
+
+		// Sync enabled state styling & filter attribute on CPT toggle change.
+		$(document).on('change', '.wppr-cpt-enable-toggle', function () {
+			var $card = $(this).closest('.wppr-pt-card');
+			var enabled = $(this).is(':checked');
+			$card.toggleClass('is-enabled-cpt', enabled);
+			$card.attr('data-cpt-enabled', enabled ? '1' : '0');
+		});
+
+		// CPT live search and filter pills.
+		$(document).on('input', '#wppr-cpt-search', applyCptFilters);
+		$(document).on('click', '.wppr-filter-pill', function () {
+			$('.wppr-filter-pill').removeClass('is-active');
+			$(this).addClass('is-active');
+			applyCptFilters();
 		});
 
 		// Toggle custom image meta key input.
@@ -237,12 +284,12 @@
 				}
 				var fields = res.data.meta_fields;
 				if (fields.length === 0) {
-					$container.html('<span class="description">متادیتایی یافت نشد.</span>');
+					$container.html('<span class="wppr-help-text">متادیتایی یافت نشد.</span>');
 					return;
 				}
 				var html = '';
 				fields.forEach(function (f) {
-					html += '<button type="button" class="button button-small wppr-insert-tag wppr-meta-chip" ' +
+					html += '<button type="button" class="wppr-chip wppr-insert-tag wppr-meta-chip" ' +
 						'data-target="' + escHtml(target) + '" ' +
 						'data-tag="' + escHtml('{meta:' + f.key + '}') + '" ' +
 						'title="' + escHtml((f.label || f.key) + ' (' + (f.source || '') + ')') + '">' +
@@ -270,7 +317,7 @@
 				return;
 			}
 
-			$btn.prop('disabled', true);
+			setBtnLoading($btn, true);
 			$out.html(renderAlert('info', i18n.loadingPreview || 'در حال بارگذاری...'));
 
 			$.post(cfg.ajaxUrl, {
@@ -290,7 +337,7 @@
 				$out.html(renderAlert('error', i18n.networkError || 'خطا در ارتباط.'));
 			})
 			.always(function () {
-				$btn.prop('disabled', false);
+				setBtnLoading($btn, false);
 			});
 		});
 
@@ -343,7 +390,7 @@
 				return;
 			}
 
-			$btn.prop('disabled', true);
+			setBtnLoading($btn, true);
 			$out.html(renderAlert('info', i18n.loadingPreview || 'در حال بارگذاری...'));
 
 			$.post(cfg.ajaxUrl, {
@@ -363,7 +410,7 @@
 				$out.html(renderAlert('error', i18n.networkError || 'خطا در ارتباط.'));
 			})
 			.always(function () {
-				$btn.prop('disabled', false);
+				setBtnLoading($btn, false);
 			});
 		});
 
@@ -388,7 +435,7 @@
 				return;
 			}
 
-			$btn.prop('disabled', true);
+			setBtnLoading($btn, true);
 			$out.html(renderAlert('info', i18n.sendingPost || 'در حال ارسال...'));
 
 			$.post(cfg.ajaxUrl, {
@@ -411,7 +458,7 @@
 				}
 			})
 			.always(function () {
-				$btn.prop('disabled', false);
+				setBtnLoading($btn, false);
 			});
 		});
 
@@ -432,7 +479,7 @@
 				return;
 			}
 
-			$btn.prop('disabled', true);
+			setBtnLoading($btn, true);
 			$out.html(renderAlert('info', i18n.sendingPost || 'در حال ارسال...'));
 
 			$.post(cfg.ajaxUrl, {
@@ -454,7 +501,7 @@
 				}
 			})
 			.always(function () {
-				$btn.prop('disabled', false);
+				setBtnLoading($btn, false);
 			});
 		});
 
@@ -464,7 +511,7 @@
 				return;
 			}
 			var $btn = $(this);
-			$btn.prop('disabled', true);
+			setBtnLoading($btn, true);
 
 			$.post(cfg.ajaxUrl, {
 				action: 'wp_payamresan_clear_logs',
@@ -474,7 +521,7 @@
 				window.location.reload();
 			})
 			.always(function () {
-				$btn.prop('disabled', false);
+				setBtnLoading($btn, false);
 			});
 		});
 	});

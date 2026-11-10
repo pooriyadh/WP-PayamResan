@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: WP PayamResan 1.0.0\n"
+"Project-Id-Version: WP PayamResan 1.1.0\n"
 "Report-Msgid-Bugs-To: pouriadaeihosseini@gmail.com\n"
 "POT-Creation-Date: 2026-11-10 00:00+0000\n"
 "MIME-Version: 1.0\n"

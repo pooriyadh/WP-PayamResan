@@ -3,7 +3,7 @@
  * Plugin Name:       WP PayamResan
  * Plugin URI:        https://github.com/pooriyadh/WP-PayamResan
  * Description:       ارسال خودکار و دستی انواع پست تایپ‌های وردپرس (با پشتیبانی کامل از جت‌انجین و متاباکس‌ها) به کانال‌های پیام‌رسان بله و تلگرام.
- * Version:           1.0.0
+ * Version:           1.1.0
  * Requires at least: 5.8
  * Requires PHP:      7.4
  * Author:            پوریا دایی حسینی
@@ -19,7 +19,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'WP_PAYAMRESAN_VERSION', '1.0.0' );
+define( 'WP_PAYAMRESAN_VERSION', '1.1.0' );
 define( 'WP_PAYAMRESAN_DB_VERSION', '1.0.0' );
 define( 'WP_PAYAMRESAN_MIN_PHP', '7.4' );
 define( 'WP_PAYAMRESAN_FILE', __FILE__ );
