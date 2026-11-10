@@ -1,0 +1,18 @@
+# Dependencies & build artifacts
+/vendor/
+/node_modules/
+/dist/
+/build/
+
+# IDE & OS files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+*.log
+*.zip
+*.tar.gz
+
+# PHPUnit / Composer cache
+.phpunit.result.cache
+composer.lock
